@@ -14,6 +14,8 @@ logOutBtn.addEventListener('click', () =>{
 })
 
 function renderUser(person, element) {
+    element.innerHTML = null;
+    window.localStorage.setItem('users', JSON.stringify(person))
     person.forEach(item => {
         /*--------------- cloneTemplate---------------------*/
         const cloneTemplate = template.cloneNode(true);
@@ -25,6 +27,7 @@ function renderUser(person, element) {
         
         newImg.setAttribute("src", item.avatar);
         elTitle.textContent = item.first_name + " " + item.last_name;
+        elLink.setAttribute("href", item.email);
         elLink.textContent = item.email;
 
         elLinkItem.addEventListener("mouseenter", () => {
@@ -35,12 +38,33 @@ function renderUser(person, element) {
     });
 }
 
-async function fetchLogin(){
-    const response = await fetch('https://reqres.in/api/users?page=2');
-    const data = await response.json();
-    const fullData = await data.data
-
-    renderUser(fullData, elList)
+try {
+    async function fetchLogin(){
+        const response = await fetch('https://reqres.in/api/users?page=2');
+        const data = await response.json();
+        const fullData = await data.data
+    
+        renderUser(fullData, elList)
+    }
+    fetchLogin()
+}catch{
+    console.error(e);
 }
+elList.addEventListener('click', (e) =>{
+    if(e.target.matches('.deleteBtn')){
+        let {uuid} = e.target.dataset;
 
-fetchLogin()
+        const users = JSON.parse(window.localStorage.getItem('users'));
+
+        const foundUserIndex = users.findIndex((row) => row.id == uuid);
+
+        fetch('https://reqres.in/api/users/' + foundUserIndex, {
+            method: "DELETE"
+        }).then(res => {
+            if(res.status == 204){
+                users.splice(foundUserIndex, 1);
+                renderUser(users, elList);
+            }
+        })
+    }
+})

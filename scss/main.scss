@@ -73,13 +73,14 @@ body {
     top: 20px;
     right: 8%;
     box-shadow: 2px 2px 3px #5a5a5a,
- inset -20px -20px 12px #ffffff;
- border: none;
- &:active{
-    box-shadow: inset 2px 2px 3px #5a5a5a,
     inset -20px -20px 12px #ffffff;
- }
+    border: none;
+    &:active{
+        box-shadow: inset 2px 2px 3px #5a5a5a,
+        inset -20px -20px 12px #ffffff;
+    }
 }
 .animate__rotateIn{
     animation-duration: 2s;
 }
+
